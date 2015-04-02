@@ -120,6 +120,7 @@ public class TravalPlanner extends Application {
         primaryStage.show();
     }
 
+    //browser for google map
     class MyBrowser extends Region {
 
         public MyBrowser() {
