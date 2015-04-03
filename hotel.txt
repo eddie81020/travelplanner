@@ -1,6 +1,7 @@
 ###################################
 #	Holiday inn
+
 #	http://www.sastructural.com/images/phoenix/img_top_holidayinn.jpg
 #	127
-#	3.6/5
+#	7.5
 ###################################

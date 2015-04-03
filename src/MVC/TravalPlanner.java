@@ -114,8 +114,6 @@ public class TravalPlanner extends Application {
         root.getChildren().addAll(left, right);
         scene = new Scene(root, 1200, 810);
 
-        //if (webEngine != null) 
-        //webEngine.executeScript("test()");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
@@ -125,7 +123,7 @@ public class TravalPlanner extends Application {
 
         public MyBrowser() {
 
-            final URL urlGoogleMaps = getClass().getResource("demo.html");
+            final URL urlGoogleMaps = getClass().getResource("googleMap.html");
             webEngine.load(urlGoogleMaps.toExternalForm());
             webEngine.setJavaScriptEnabled(true);
             getChildren().add(webView);
