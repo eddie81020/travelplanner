@@ -6,6 +6,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -64,7 +65,7 @@ public class TravalPlanner extends Application {
         hotelInfoLab.setPrefSize(300, 800);
         hotelInfoLab.setStyle(" -fx-background-color: LAVENDER;");
         hotelInfoTab.setContent(hotelInfoLab);
-        
+
         Tab sightInfoTab = new Tab();
         sightInfoTab.setText("Sights");
         sightInfoTab.setClosable(false);
@@ -72,7 +73,7 @@ public class TravalPlanner extends Application {
         sightInfoLab.setPrefSize(300, 800);
         sightInfoLab.setStyle(" -fx-background-color: LAVENDER;");
         sightInfoTab.setContent(sightInfoLab);
-        
+
         Tab ticketInfoTab = new Tab();
         ticketInfoTab.setText("Tickets");
         ticketInfoTab.setClosable(false);
@@ -80,7 +81,7 @@ public class TravalPlanner extends Application {
         ticketInfoLab.setPrefSize(300, 800);
         ticketInfoLab.setStyle(" -fx-background-color: LAVENDER;");
         ticketInfoTab.setContent(ticketInfoLab);
-        
+
         infoSec.getTabs().addAll(hotelInfoTab, sightInfoTab, ticketInfoTab);
         myModel.addListener(hotelInfoLab);
         myModel.addListener(sightInfoLab);
@@ -91,25 +92,40 @@ public class TravalPlanner extends Application {
 
         left.setSpacing(10);
         left.setPadding(new Insets(0, 20, 0, 0));
-        TextField departureTF = new TextField("Enter Departure");
-        TextField destinationTF = new TextField("Enter Destination");
+        TextField departureTF = new TextField("15 Spinks Drive, Saskatoon");
+        TextField destinationTF = new TextField("University of Saskatchewan");
         Label depLab = new Label("Departure:");
         Label desLab = new Label("Destination");
         depLab.setFont(Font.font(20));
         desLab.setFont(Font.font(20));
+
         Button submitButton = new Button("Submit");
-        left.getChildren().addAll(depLab, departureTF, desLab, destinationTF, submitButton, myBrowser);
+        ChoiceBox<String> travelMethod = new ChoiceBox<>();
+        travelMethod.getItems().addAll("DRIVING", "TRANSIT", "WALKING", "BICYCLING", "FLIGHT");
+        travelMethod.getSelectionModel().select(0);
+
+        HBox submitPanel = new HBox();
+        submitPanel.setSpacing(20);
+        submitPanel.getChildren().addAll(submitButton, travelMethod);
 
         submitButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                String DepTemp = departureTF.getText();
-                String DesTemp = destinationTF.getText();
-                webEngine.executeScript("inputStartEnd('" + DepTemp + "','" + DesTemp + "')");
-                myModel.setDeparture(DepTemp);
-                myModel.setDestination(DesTemp);
+                if (travelMethod.getSelectionModel().getSelectedIndex() != 4) {
+                    String DepTemp = departureTF.getText();
+                    String DesTemp = destinationTF.getText();
+                    webEngine.executeScript("setTravelMethod('" + travelMethod.getSelectionModel().getSelectedItem() + "')");
+                    webEngine.executeScript("inputStartEnd('" + DepTemp + "','" + DesTemp + "')");
+
+                    myModel.setDeparture(DepTemp);
+                    myModel.setDestination(DesTemp);
+                } else {
+
+                }
             }
         });
+
+        left.getChildren().addAll(depLab, departureTF, desLab, destinationTF, submitPanel, myBrowser);
 
         root.getChildren().addAll(left, right);
         scene = new Scene(root, 1200, 810);
@@ -122,7 +138,7 @@ public class TravalPlanner extends Application {
     class MyBrowser extends Region {
 
         public MyBrowser() {
-
+            
             final URL urlGoogleMaps = getClass().getResource("googleMap.html");
             webEngine.load(urlGoogleMaps.toExternalForm());
             webEngine.setJavaScriptEnabled(true);

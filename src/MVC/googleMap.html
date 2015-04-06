@@ -57,19 +57,27 @@
         <script language="javascript">
             var directionsDisplay;
             var directionsService = new google.maps.DirectionsService();
-            
+
             var testStart;
             var testEnd;
+            var travelMethod;
 
-            function inputStartEnd(s,e) {
-               testStart = s;
-               testEnd = e;
-               if(testStart!==null && testEnd!==null){
-                   calcRouteTest();
-               }
+            function inputStartEnd(s, e) {
+                testStart = s;
+                testEnd = e;
+                if (testStart !== null && testEnd !== null) {
+                    calcRouteTest();
+                }
+            }
+
+            function setTravelMethod(i) {
+                travelMethod = i;
+                console.log('test');
+                console.log(travelMethod);
             }
 
             function initialize() {
+                travelMethod = 'DRIVING';
                 directionsDisplay = new google.maps.DirectionsRenderer();
                 var mapOptions = {
                     zoom: 7,
@@ -89,10 +97,10 @@
 
             function calcRouteTest() {
                 var request = {
-                    origin: testStart.toString(),
-                    destination: testEnd.toString(),
-                    travelMode: google.maps.TravelMode.DRIVING
-                };
+                            origin: testStart.toString(),
+                            destination: testEnd.toString(),
+                            travelMode: google.maps.TravelMode[travelMethod]
+                        };
                 directionsService.route(request, function (response, status) {
                     if (status == google.maps.DirectionsStatus.OK) {
                         directionsDisplay.setDirections(response);
@@ -103,11 +111,6 @@
             function calcRoute() {
                 var start = document.getElementById('enterDeparture').value;
                 var end = document.getElementById('enterDestination').value;
-                var request = {
-                    origin: start,
-                    destination: end,
-                    travelMode: google.maps.TravelMode.DRIVING
-                };
                 directionsService.route(request, function (response, status) {
                     if (status == google.maps.DirectionsStatus.OK) {
                         directionsDisplay.setDirections(response);
@@ -137,7 +140,7 @@
         </script>
     </head>
     <body>
-        
+
 
         <div id="directions-panel"></div>
         <div id="map-canvas"></div>
