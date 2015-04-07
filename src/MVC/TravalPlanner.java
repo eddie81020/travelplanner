@@ -3,6 +3,10 @@ package MVC;
 import java.net.URL;
 import java.util.LinkedList;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.concurrent.Worker.State;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -23,6 +27,7 @@ import javafx.scene.text.Font;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
+import netscape.javascript.JSObject;
 
 /**
  *
@@ -39,6 +44,7 @@ public class TravalPlanner extends Application {
     VBox right;
     VBox left;
     TravalPlannerModel myModel;
+    Distance distance;
 
     VBox hotelInfoBox;
     VBox sightInfoBox;
@@ -63,6 +69,7 @@ public class TravalPlanner extends Application {
         myBrowser = new MyBrowser();
         TabPane infoSec = new TabPane();
         myModel = new TravalPlannerModel();
+        distance = new Distance();
 
         root.setPadding(new Insets(10, 20, 20, 20));
 
@@ -131,6 +138,22 @@ public class TravalPlanner extends Application {
         ChoiceBox<String> travelMethod = new ChoiceBox<>();
         travelMethod.getItems().addAll("DRIVING", "TRANSIT", "WALKING", "BICYCLING", "FLIGHT");
         travelMethod.getSelectionModel().select(4);
+        travelMethod.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
+                if (travelMethod.getSelectionModel().getSelectedIndex() != 4) {
+                    if (browser != 0) {
+                        myBrowser.switchMap();
+                        browser = 0;
+                    }
+                } else {
+                    if (browser != 1) {
+                        myBrowser.switchMap();
+                        browser = 1;
+                    }
+                }
+            }
+        });
 
         HBox submitPanel = new HBox();
         submitPanel.setSpacing(20);
@@ -138,21 +161,14 @@ public class TravalPlanner extends Application {
 
         submitButton.setOnMouseClicked((MouseEvent event) -> {
             String DepTemp = departureTF.getText();
-                String DesTemp = destinationTF.getText();
+            String DesTemp = destinationTF.getText();
             if (travelMethod.getSelectionModel().getSelectedIndex() != 4) {
-                if (browser != 0) {
-                    myBrowser.switchMap();
-                    browser = 0;
-                }
                 webEngine.executeScript("setTravelMethod('" + travelMethod.getSelectionModel().getSelectedItem() + "')");
                 webEngine.executeScript("inputStartEnd('" + DepTemp + "','" + DesTemp + "')");
                 myModel.setDeparture(DepTemp);
                 myModel.setDestination(DesTemp);
             } else {
-                if (browser != 1) {
-                    myBrowser.switchMap();
-                    browser = 1;
-                }
+
                 webEngine.executeScript("setLocation('" + DepTemp + "','" + DesTemp + "')");
             }
             setTabs(DesTemp);
@@ -210,7 +226,7 @@ public class TravalPlanner extends Application {
                 j++;
             }
         }
-        
+
         for (Info i : sight) {
             if (Math.random() < 0.7) {
                 AnchorPane template = new AnchorPane();
@@ -226,10 +242,11 @@ public class TravalPlanner extends Application {
                 Label nameLabel = new Label();
                 nameLabel.setText(i.getName() + " " + dest);
                 Label priceLabel = new Label();
-                if(i.getPrice()>0)
+                if (i.getPrice() > 0) {
                     priceLabel.setText("Price: " + i.getPrice() + " per person");
-                else
+                } else {
                     priceLabel.setText("Price: free");
+                }
                 Label rateLabel = new Label();
                 rateLabel.setText("Rating: " + i.getRating() + "/5");
                 labelBox.setPrefSize(193, 150);
@@ -249,7 +266,7 @@ public class TravalPlanner extends Application {
                 j++;
             }
         }
-        
+
         for (Info i : flight) {
             if (Math.random() < 0.7) {
                 AnchorPane template = new AnchorPane();
@@ -265,10 +282,8 @@ public class TravalPlanner extends Application {
                 Label nameLabel = new Label();
                 nameLabel.setText(i.getName());
                 Label priceLabel = new Label();
-                if(i.getPrice()>0)
-                    priceLabel.setText("Price: " + i.getPrice() + " per person");
-                else
-                    priceLabel.setText("Price: free");
+                //priceLabel.setText("Price: " + i.getPrice() + " per person");
+                priceLabel.setText("Dist: " + distance.getDist());
                 Label rateLabel = new Label();
                 rateLabel.setText("Rating: " + i.getRating() + "/5");
                 labelBox.setPrefSize(193, 150);
@@ -303,7 +318,18 @@ public class TravalPlanner extends Application {
             webEngine.load(urlGoogleMapsFlight.toExternalForm());
             webEngine.setJavaScriptEnabled(true);
             getChildren().add(webView);
-
+            /*webEngine.getLoadWorker().stateProperty().addListener(
+                    new ChangeListener<State>() {
+                        @Override
+                        public void changed(ObservableValue<? extends State> ov,
+                                State oldState, State newState) {
+                            if (newState == State.SUCCEEDED) {
+                                JSObject win = (JSObject) webEngine.executeScript("window");
+                                win.setMember("app", new Distance());
+                            }
+                        }
+                    }
+            );*/
         }
 
         public void switchMap() {
@@ -321,7 +347,11 @@ public class TravalPlanner extends Application {
 
         private Double dist;
 
-        public Distance() {
+        public void exit() {
+            Platform.exit();
+        }
+        
+        public Distance(){
             dist = 0.0;
         }
 
