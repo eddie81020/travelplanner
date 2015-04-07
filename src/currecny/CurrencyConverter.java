@@ -1,6 +1,21 @@
-
+/*
+ * Copyright (c) 2007 Thomas Knierim
+ * http://www.thomasknierim.com
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package currecny;
-
 
 import java.net.*;
 import java.io.*;
@@ -16,6 +31,7 @@ import java.util.*;
  * 14:15 CET. These rates use EUR as reference currency and are specified with a
  * precision of 1/10000 of the currency unit (one hundredth cent). See:
  *
+ * http://www.ecb.int/stats/exchange/eurofxref/html/index.en.html
  *
  * The convert() method performs currency conversions using either double values
  * or 64-bit long integer values. Long values are preferred in order to avoid
@@ -412,4 +428,22 @@ public final class CurrencyConverter {
         }
     }
     
+     public static void main(String[] args) throws IOException, ParseException
+    {
+        System.out.println("*** Simple tests of this class ****");
+        CurrencyConverter converter = CurrencyConverter.getInstance();
+        for (String currency : converter.getCurrencies()) {
+            System.out.println("Currency: " + currency);
+        }
+        Date date = new Date();
+        double amount = 1;
+        double converted;
+        String fromCurrency = "CNY";
+        String toCurrency = "CAD";
+        converted = converter.convert(amount, fromCurrency, toCurrency);
+        System.out.println(amount + " " + fromCurrency + " = " + converted + " " + toCurrency);
+
+
+    }
+
 }
