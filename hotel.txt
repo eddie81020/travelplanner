@@ -29,7 +29,7 @@
 #	185
 #	3.9
 ###################################
-#	Radisson Hotel$Resorts
+#	Radisson Hotel&Resorts
 #	http://upload.wikimedia.org/wikipedia/en/thumb/c/c6/Radisson_Hotel_Logo.svg/1280px-Radisson_Hotel_Logo.svg.png
 #	172
 #	3.8

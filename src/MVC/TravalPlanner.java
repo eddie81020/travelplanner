@@ -1,16 +1,21 @@
 package MVC;
 
 import java.net.URL;
+import java.util.LinkedList;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
@@ -35,6 +40,10 @@ public class TravalPlanner extends Application {
     VBox left;
     TravalPlannerModel myModel;
 
+    VBox hotelInfoBox;
+    VBox sightInfoBox;
+    VBox ticketInfoBox;
+
     /**
      *    * @param args the command line arguments    
      *
@@ -46,7 +55,7 @@ public class TravalPlanner extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setTitle("Traval Planner (beta ver.1.2.63 demo)");
+        primaryStage.setTitle("Traval Planner (beta ver.3.6.22 demo)");
 
         root = new HBox();
         right = new VBox();
@@ -64,32 +73,49 @@ public class TravalPlanner extends Application {
         hotelInfoTab.setText("Hotels");
         hotelInfoTab.setClosable(false);
         InfoTabLabel hotelInfoLab = new InfoTabLabel("hotel", "HOTEL INFO!!!!!");
-        hotelInfoLab.setPrefSize(300, 800);
+        hotelInfoLab.setPrefSize(320, 150);
+        hotelInfoBox = new VBox();
+        hotelInfoBox.getChildren().add(hotelInfoLab);
         hotelInfoLab.setStyle(" -fx-background-color: LAVENDER;");
-        hotelInfoTab.setContent(hotelInfoLab);
+        ScrollPane hotelInfoPane = new ScrollPane();
+        hotelInfoPane.setPrefSize(320, 800);
+        hotelInfoPane.setContent(hotelInfoBox);
+        hotelInfoTab.setContent(hotelInfoPane);
 
         Tab sightInfoTab = new Tab();
         sightInfoTab.setText("Sights");
         sightInfoTab.setClosable(false);
         InfoTabLabel sightInfoLab = new InfoTabLabel("sights", "SIGHTS INFO!!!!!");
-        sightInfoLab.setPrefSize(300, 800);
+        sightInfoLab.setPrefSize(320, 150);
+        sightInfoBox = new VBox();
+        sightInfoBox.getChildren().add(sightInfoLab);
         sightInfoLab.setStyle(" -fx-background-color: LAVENDER;");
-        sightInfoTab.setContent(sightInfoLab);
+        ScrollPane sightInfoPane = new ScrollPane();
+        sightInfoPane.setPrefSize(320, 800);
+        sightInfoPane.setContent(sightInfoBox);
+        sightInfoTab.setContent(sightInfoPane);
 
         Tab ticketInfoTab = new Tab();
         ticketInfoTab.setText("Tickets");
         ticketInfoTab.setClosable(false);
         InfoTabLabel ticketInfoLab = new InfoTabLabel("ticket", "TICKETS INFO!!!!!");
-        ticketInfoLab.setPrefSize(300, 800);
+        ticketInfoLab.setPrefSize(320, 150);
+        ticketInfoBox = new VBox();
+        ticketInfoBox.getChildren().add(ticketInfoLab);
         ticketInfoLab.setStyle(" -fx-background-color: LAVENDER;");
-        ticketInfoTab.setContent(ticketInfoLab);
+        ScrollPane ticketInfoPane = new ScrollPane();
+        ticketInfoPane.setPrefSize(320, 800);
+        ticketInfoPane.setContent(ticketInfoBox);
+        ticketInfoTab.setContent(ticketInfoPane);
 
+        infoSec.setPrefSize(320, 800);
         infoSec.getTabs().addAll(hotelInfoTab, sightInfoTab, ticketInfoTab);
         myModel.addListener(hotelInfoLab);
         myModel.addListener(sightInfoLab);
         myModel.addListener(ticketInfoLab);
 
         right.setPadding(new Insets(0, 0, 0, 20));
+        right.setSpacing(10);
         right.getChildren().addAll(infoLab, infoSec);
 
         left.setSpacing(10);
@@ -104,20 +130,20 @@ public class TravalPlanner extends Application {
         Button submitButton = new Button("Submit");
         ChoiceBox<String> travelMethod = new ChoiceBox<>();
         travelMethod.getItems().addAll("DRIVING", "TRANSIT", "WALKING", "BICYCLING", "FLIGHT");
-        travelMethod.getSelectionModel().select(0);
+        travelMethod.getSelectionModel().select(4);
 
         HBox submitPanel = new HBox();
         submitPanel.setSpacing(20);
         submitPanel.getChildren().addAll(travelMethod, submitButton);
 
         submitButton.setOnMouseClicked((MouseEvent event) -> {
+            String DepTemp = departureTF.getText();
+                String DesTemp = destinationTF.getText();
             if (travelMethod.getSelectionModel().getSelectedIndex() != 4) {
                 if (browser != 0) {
                     myBrowser.switchMap();
                     browser = 0;
                 }
-                String DepTemp = departureTF.getText();
-                String DesTemp = destinationTF.getText();
                 webEngine.executeScript("setTravelMethod('" + travelMethod.getSelectionModel().getSelectedItem() + "')");
                 webEngine.executeScript("inputStartEnd('" + DepTemp + "','" + DesTemp + "')");
                 myModel.setDeparture(DepTemp);
@@ -127,11 +153,9 @@ public class TravalPlanner extends Application {
                     myBrowser.switchMap();
                     browser = 1;
                 }
-                
-                String DepTemp = departureTF.getText();
-                String DesTemp = destinationTF.getText();
                 webEngine.executeScript("setLocation('" + DepTemp + "','" + DesTemp + "')");
             }
+            setTabs(DesTemp);
         });
 
         left.getChildren().addAll(depLab, departureTF, desLab, destinationTF, submitPanel, myBrowser);
@@ -141,6 +165,129 @@ public class TravalPlanner extends Application {
 
         primaryStage.setScene(scene);
         primaryStage.show();
+    }
+
+    private void setTabs(String dest) {
+        hotelInfoBox.getChildren().clear();
+        sightInfoBox.getChildren().clear();
+        ticketInfoBox.getChildren().clear();
+        LinkedList<Info> hotel = myModel.getHotelInfo();
+        LinkedList<Info> sight = myModel.getSightInfo();
+        LinkedList<Info> flight = myModel.getFlightInfo();
+        int j = 0;
+        for (Info i : hotel) {
+            if (Math.random() < 0.7) {
+                AnchorPane template = new AnchorPane();
+                template.setPrefSize(303, 150);
+                if (j % 3 == 0) {
+                    template.setStyle(" -fx-background-color: LAVENDER;");
+                } else if (j % 3 == 1) {
+                    template.setStyle(" -fx-background-color: #9AF8D4;");
+                } else {
+                    template.setStyle(" -fx-background-color: #FCB0B0;");
+                }
+                VBox labelBox = new VBox();
+                Label nameLabel = new Label();
+                nameLabel.setText(i.getName() + " " + dest);
+                Label priceLabel = new Label();
+                priceLabel.setText("Price: " + i.getPrice() + " per night");
+                Label rateLabel = new Label();
+                rateLabel.setText("Rating: " + i.getRating() + "/5");
+                labelBox.setPrefSize(193, 150);
+                labelBox.setSpacing(20);
+                labelBox.setPadding(new Insets(35, 0, 0, 0));
+                labelBox.getChildren().addAll(nameLabel, priceLabel, rateLabel);
+                Image img = new Image(i.getURL());
+                ImageView imgv = new ImageView();
+                imgv.setImage(img);
+                imgv.setFitHeight(100);
+                imgv.setFitWidth(100);
+                AnchorPane.setLeftAnchor(imgv, 10.0);
+                AnchorPane.setTopAnchor(imgv, 25.0);
+                AnchorPane.setLeftAnchor(labelBox, 120.0);
+                template.getChildren().addAll(imgv, labelBox);
+                hotelInfoBox.getChildren().add(template);
+                j++;
+            }
+        }
+        
+        for (Info i : sight) {
+            if (Math.random() < 0.7) {
+                AnchorPane template = new AnchorPane();
+                template.setPrefSize(303, 150);
+                if (j % 3 == 0) {
+                    template.setStyle(" -fx-background-color: LAVENDER;");
+                } else if (j % 3 == 1) {
+                    template.setStyle(" -fx-background-color: #9AF8D4;");
+                } else {
+                    template.setStyle(" -fx-background-color: #FCB0B0;");
+                }
+                VBox labelBox = new VBox();
+                Label nameLabel = new Label();
+                nameLabel.setText(i.getName() + " " + dest);
+                Label priceLabel = new Label();
+                if(i.getPrice()>0)
+                    priceLabel.setText("Price: " + i.getPrice() + " per person");
+                else
+                    priceLabel.setText("Price: free");
+                Label rateLabel = new Label();
+                rateLabel.setText("Rating: " + i.getRating() + "/5");
+                labelBox.setPrefSize(193, 150);
+                labelBox.setSpacing(20);
+                labelBox.setPadding(new Insets(35, 0, 0, 0));
+                labelBox.getChildren().addAll(nameLabel, priceLabel, rateLabel);
+                Image img = new Image(i.getURL());
+                ImageView imgv = new ImageView();
+                imgv.setImage(img);
+                imgv.setFitHeight(100);
+                imgv.setFitWidth(100);
+                AnchorPane.setLeftAnchor(imgv, 10.0);
+                AnchorPane.setTopAnchor(imgv, 25.0);
+                AnchorPane.setLeftAnchor(labelBox, 120.0);
+                template.getChildren().addAll(imgv, labelBox);
+                sightInfoBox.getChildren().add(template);
+                j++;
+            }
+        }
+        
+        for (Info i : flight) {
+            if (Math.random() < 0.7) {
+                AnchorPane template = new AnchorPane();
+                template.setPrefSize(303, 150);
+                if (j % 3 == 0) {
+                    template.setStyle(" -fx-background-color: LAVENDER;");
+                } else if (j % 3 == 1) {
+                    template.setStyle(" -fx-background-color: #9AF8D4;");
+                } else {
+                    template.setStyle(" -fx-background-color: #FCB0B0;");
+                }
+                VBox labelBox = new VBox();
+                Label nameLabel = new Label();
+                nameLabel.setText(i.getName());
+                Label priceLabel = new Label();
+                if(i.getPrice()>0)
+                    priceLabel.setText("Price: " + i.getPrice() + " per person");
+                else
+                    priceLabel.setText("Price: free");
+                Label rateLabel = new Label();
+                rateLabel.setText("Rating: " + i.getRating() + "/5");
+                labelBox.setPrefSize(193, 150);
+                labelBox.setSpacing(20);
+                labelBox.setPadding(new Insets(35, 0, 0, 0));
+                labelBox.getChildren().addAll(nameLabel, priceLabel, rateLabel);
+                Image img = new Image(i.getURL());
+                ImageView imgv = new ImageView();
+                imgv.setImage(img);
+                imgv.setFitHeight(60);
+                imgv.setFitWidth(100);
+                AnchorPane.setLeftAnchor(imgv, 10.0);
+                AnchorPane.setTopAnchor(imgv, 45.0);
+                AnchorPane.setLeftAnchor(labelBox, 120.0);
+                template.getChildren().addAll(imgv, labelBox);
+                ticketInfoBox.getChildren().add(template);
+                j++;
+            }
+        }
     }
 
     //browser for google map
@@ -167,6 +314,23 @@ public class TravalPlanner extends Application {
                 webEngine.load(urlGoogleMaps.toExternalForm());
                 map = 0;
             }
+        }
+    }
+
+    class Distance {
+
+        private Double dist;
+
+        public Distance() {
+            dist = 0.0;
+        }
+
+        public void setDist(Double d) {
+            dist = d;
+        }
+
+        public Double getDist() {
+            return dist;
         }
     }
 }
