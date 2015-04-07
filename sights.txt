@@ -1,50 +1,50 @@
 ###################################
 #	Zoo
-#	http://www.boldts.net/p3/ToZoo.0.jpeg
+#	pic/sights/zoo.jpeg
 #	15
 #	3.8
 ###################################
 #	Tower
-#	http://www.vivaboo.com/wp-content/uploads/2011/08/I-can-see-my-house-Calgary-tower-Alberta-Canada-CA-glass-floor-kid-boy-child-pointing-happy-hyatt-hotel-tourist-travel-tourism-view-sight-seeing-tall.jpg
+#	pic/sights/tower.jpg
 #	80
 #	4.1
 ###################################
 #	Dinosaur Museum
-#	http://www.updateonwebsite.com/apkasafar_new1final/uae-tours/images/Dubai-Museum.jpg
+#	pic/sights/dino_museum.jpg
 #	34
 #	4.3
 ###################################
 #	City Bridge
-#	http://www.steamclock.com/img/posts/bridges.jpg
+#	pic/sights/bridge.jpg
 #	0
 #	3.6
 ###################################
 #	City Museum
-#	http://www.olsonkundigarchitects.com/gallery_cache/1440/800_600/Burke_05_HiRes_Light.jpg
+#	pic/sights/museum.jpg
 #	0
 #	4.4
 ###################################
 #	Cathedral
-#	https://journeyintoamerica.files.wordpress.com/2009/10/national-cathedral-picture.jpg
+#	pic/sights/cathedral.jpg
 #	0
 #	3.5
 ###################################
 #	Castle
-#	http://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2009/9/10/1252601845177/Bodiam-Castle-East-Sussex-001.jpg
+#	pic/sights/castle.jpg
 #	0
 #	3.2
 ###################################
 #	City Gate
-#	http://upload.wikimedia.org/wikipedia/commons/4/43/Ponta_Delgada_-_City_Gate.JPG
+#	pic/sights/gate.JPG
 #	0
 #	3.5
 ###################################
 #	Aquarium
-#	http://smartcanucks.ca/wp-content/uploads/2014/12/ripleys-aquarium-toronto.jpg
+#	pic/sights/aquarium.jpg
 #	40
 #	4.4
 ###################################
 #	City Park
-#	https://landnotes.files.wordpress.com/2009/11/1118_post-office-sq_485x340.jpg
+#	pic/sights/park.jpg
 #	0
 #	3.3

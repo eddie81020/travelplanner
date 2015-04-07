@@ -1,60 +1,60 @@
 ###################################
 #	Holiday inn
-#	http://www.sastructural.com/images/phoenix/img_top_holidayinn.jpg
+#	pic/hotel/holiday.jpg
 #	127
 #	4.1
 ###################################
 #	The Prince George Hotel
-#	http://www.princegeorgehotel.com/img/gallery/hires-prince-george-logo.jpg
+#	pic/hotel/george.jpg
 #	145
 #	3.0
 ###################################
 #	UB Hotel
-#	http://logopond.com/logos/cd99a23d09e41079e81cae0789ad38a1.png
+#	pic/hotel/ub.png
 #	165
 #	3.1
 ###################################
 #	Galaxy Hotel
-#	http://www.galaxy-hotel.com/img/x2/collection/downloads/GALAXY%20HOTEL%20IRAKLIO%20LOGO_1349959520.jpg
+#	pic/hotel/galaxy.jpg
 #	180
 #	4.0
 ###################################
 #	Sheraton Hotel&Resorts
-#	https://ohio.cafecourier.com/images/Sheraton.jpg
+#	pic/hotel/sheraton.jpg
 #	210
 #	4.2
 ###################################
 #	Delta Hotels
-#	http://www.cacpr.ca/members/images/delta_hotel_logo_cam_2005.jpg
+#	pic/hotel/delta.jpg
 #	185
 #	3.9
 ###################################
 #	Radisson Hotel&Resorts
-#	http://upload.wikimedia.org/wikipedia/en/thumb/c/c6/Radisson_Hotel_Logo.svg/1280px-Radisson_Hotel_Logo.svg.png
+#	pic/hotel/radisson.png
 #	172
 #	3.8
 ###################################
 #	King Charles Hotel
-#	http://www.smoothhound.co.uk/hotels/images/kingchd.gif
+#	pic/hotel/charles.gif
 #	220
 #	3.7
 ###################################
 #	Virgin Hotels
-#	https://nyocommercialobserver.files.wordpress.com/2014/06/virgin-hotels-logo.jpg
+#	pic/hotel/virgin.jpg
 #	205
 #	3.9
 ###################################
 #	Trident Hotels
-#	https://www.singaporeair.com/images/PPSClub_KrisFlyer/Non-air_Partners/Hotels/trident-logo.png
+#	pic/hotel/trident.png
 #	215
 #	3.4
 ###################################
 #	Days Hotel
-#	http://www.hcs.harvard.edu/~hub/95th/wp-content/uploads/Days-Hotel.jpg
+#	pic/hotel/days.jpg
 #	201
 #	3.6
 ###################################
 #	Westin Hotels and Resorts
-#	http://kingdomflooring.ca/home/wp-content/uploads/2014/01/Westin-hotels-resorts-logo.jpg
+#	pic/hotel/westin.jpg
 #	174
 #	3.2
