@@ -27,6 +27,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
@@ -195,6 +196,7 @@ public class TravalPlanner extends Application {
         fromCurrencyTF = new TextField("1");
         fromCurrencyTF.setPrefWidth(60);
         toCurrencyLabel.setPadding(new Insets(5, 0, 0, 0));
+        toCurrencyLabel.setFont(Font.font("Arial", FontWeight.BOLD, 14));
         ratio = 0;
         try {
             ratio = converter.convert(1.0, fromCurrencyCB.getSelectionModel().getSelectedItem(), toCurrencyCB.getSelectionModel().getSelectedItem());
