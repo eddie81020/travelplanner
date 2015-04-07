@@ -1,7 +1,12 @@
 package MVC;
 
+import currecny.CurrencyConverter;
+import java.io.IOException;
 import java.net.URL;
+import java.text.ParseException;
 import java.util.LinkedList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -49,6 +54,12 @@ public class TravalPlanner extends Application {
     Distance distance;
     double distKM;
     JSObject window;
+    CurrencyConverter converter;
+    double ratio;
+    ChoiceBox<String> fromCurrencyCB;
+    ChoiceBox<String> toCurrencyCB;
+    Label toCurrencyLabel;
+    TextField fromCurrencyTF;
 
     VBox hotelInfoBox;
     VBox sightInfoBox;
@@ -64,7 +75,7 @@ public class TravalPlanner extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage) throws IOException {
         primaryStage.setTitle("Traval Planner (beta ver.3.6.22 demo)");
 
         root = new HBox();
@@ -87,7 +98,7 @@ public class TravalPlanner extends Application {
         hotelInfoTab.setText("Hotels");
         hotelInfoTab.setClosable(false);
         InfoTabLabel hotelInfoLab = new InfoTabLabel("hotel", "HOTEL INFO!!!!!");
-        hotelInfoLab.setPrefSize(320, 150);
+        hotelInfoLab.setPrefSize(320, 700);
         hotelInfoBox = new VBox();
         hotelInfoBox.getChildren().add(hotelInfoLab);
         hotelInfoLab.setStyle(" -fx-background-color: LAVENDER;");
@@ -100,7 +111,7 @@ public class TravalPlanner extends Application {
         sightInfoTab.setText("Sights");
         sightInfoTab.setClosable(false);
         InfoTabLabel sightInfoLab = new InfoTabLabel("sights", "SIGHTS INFO!!!!!");
-        sightInfoLab.setPrefSize(320, 150);
+        sightInfoLab.setPrefSize(320, 700);
         sightInfoBox = new VBox();
         sightInfoBox.getChildren().add(sightInfoLab);
         sightInfoLab.setStyle(" -fx-background-color: LAVENDER;");
@@ -113,7 +124,7 @@ public class TravalPlanner extends Application {
         ticketInfoTab.setText("Tickets");
         ticketInfoTab.setClosable(false);
         InfoTabLabel ticketInfoLab = new InfoTabLabel("ticket", "TICKETS INFO!!!!!");
-        ticketInfoLab.setPrefSize(320, 150);
+        ticketInfoLab.setPrefSize(320, 700);
         ticketInfoBox = new VBox();
         ticketInfoBox.getChildren().add(ticketInfoLab);
         ticketInfoLab.setStyle(" -fx-background-color: LAVENDER;");
@@ -152,7 +163,6 @@ public class TravalPlanner extends Application {
                     if (browser != 0) {
                         currentBrowser = browser0;
                         browser = 0;
-                        System.out.println("switched");
                         left.getChildren().remove(5);
                         left.getChildren().add(currentBrowser);
                     }
@@ -160,7 +170,6 @@ public class TravalPlanner extends Application {
                     if (browser != 1) {
                         currentBrowser = browser1;
                         browser = 1;
-                        System.out.println("switched");
                         left.getChildren().remove(5);
                         left.getChildren().add(currentBrowser);
                     }
@@ -168,9 +177,37 @@ public class TravalPlanner extends Application {
             }
         });
 
+        converter = CurrencyConverter.getInstance();
+        fromCurrencyCB = new ChoiceBox<>();
+        toCurrencyCB = new ChoiceBox<>();
+        try {
+            fromCurrencyCB.getItems().addAll(converter.getCurrencies());
+            toCurrencyCB.getItems().addAll(converter.getCurrencies());
+            fromCurrencyCB.getSelectionModel().select(22);
+            toCurrencyCB.getSelectionModel().select(22);
+        } catch (ParseException ex) {
+            Logger.getLogger(TravalPlanner.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        Label currencyNameLabel = new Label("  Currency:");
+        currencyNameLabel.setPadding(new Insets(5, 0, 0, 0));
+        toCurrencyLabel = new Label();
+        fromCurrencyTF = new TextField("1");
+        fromCurrencyTF.setPrefWidth(60);
+        toCurrencyLabel.setPadding(new Insets(5, 0, 0, 0));
+        ratio = 0;
+        try {
+            ratio = converter.convert(1.0, fromCurrencyCB.getSelectionModel().getSelectedItem(), toCurrencyCB.getSelectionModel().getSelectedItem());
+        } catch (ParseException ex) {
+            Logger.getLogger(TravalPlanner.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalArgumentException ex) {
+            Logger.getLogger(TravalPlanner.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        toCurrencyLabel.setText("to    " + String.format("%.3f%n", ratio));
+
         HBox submitPanel = new HBox();
         submitPanel.setSpacing(20);
-        submitPanel.getChildren().addAll(travelMethod, submitButton);
+        submitPanel.getChildren().addAll(travelMethod, currencyNameLabel, fromCurrencyTF, fromCurrencyCB, toCurrencyLabel, toCurrencyCB, submitButton);
 
         submitButton.setOnMouseClicked((MouseEvent event) -> {
             String DepTemp = departureTF.getText();
@@ -183,6 +220,7 @@ public class TravalPlanner extends Application {
             } else {
                 webEngine1.executeScript("setLocation('" + DepTemp + "','" + DesTemp + "')");
             }
+            recalculateRatio();
             setTabs(DesTemp);
         });
 
@@ -193,6 +231,24 @@ public class TravalPlanner extends Application {
 
         primaryStage.setScene(scene);
         primaryStage.show();
+    }
+
+    private void recalculateRatio() {
+        calculateRatio(Double.parseDouble(fromCurrencyTF.getText()), fromCurrencyCB.getSelectionModel().getSelectedItem(), toCurrencyCB.getSelectionModel().getSelectedItem());
+        toCurrencyLabel.setText("to    " + String.format("%.3f%n", ratio));
+    }
+
+    private double calculateRatio(double i, String from, String to) {
+        try {
+            ratio = converter.convert(i, from, to);
+        } catch (IOException ex) {
+            Logger.getLogger(TravalPlanner.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParseException ex) {
+            Logger.getLogger(TravalPlanner.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalArgumentException ex) {
+            Logger.getLogger(TravalPlanner.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return ratio;
     }
 
     private void setTabs(String dest) {
@@ -218,12 +274,13 @@ public class TravalPlanner extends Application {
                 Label nameLabel = new Label();
                 nameLabel.setText(i.getName() + " " + dest);
                 Label priceLabel = new Label();
-                priceLabel.setText("Price: " + i.getPrice() + " per night");
+                calculateRatio(i.getPrice(), "CAD", toCurrencyCB.getSelectionModel().getSelectedItem());
+                priceLabel.setText("Price: " + String.format("%.1f%n", ratio) + " per night");
                 Label rateLabel = new Label();
                 rateLabel.setText("Rating: " + i.getRating() + "/5");
                 labelBox.setPrefSize(193, 150);
                 labelBox.setSpacing(20);
-                labelBox.setPadding(new Insets(35, 0, 0, 0));
+                labelBox.setPadding(new Insets(30, 0, 0, 0));
                 labelBox.getChildren().addAll(nameLabel, priceLabel, rateLabel);
                 Image img = new Image(i.getURL());
                 ImageView imgv = new ImageView();
@@ -255,7 +312,8 @@ public class TravalPlanner extends Application {
                 nameLabel.setText(i.getName() + " " + dest);
                 Label priceLabel = new Label();
                 if (i.getPrice() > 0) {
-                    priceLabel.setText("Price: " + i.getPrice() + " per person");
+                    calculateRatio(i.getPrice(), "CAD", toCurrencyCB.getSelectionModel().getSelectedItem());
+                    priceLabel.setText("Price: " + String.format("%.1f%n", ratio) + " per person");
                 } else {
                     priceLabel.setText("Price: free");
                 }
@@ -263,7 +321,7 @@ public class TravalPlanner extends Application {
                 rateLabel.setText("Rating: " + i.getRating() + "/5");
                 labelBox.setPrefSize(193, 150);
                 labelBox.setSpacing(20);
-                labelBox.setPadding(new Insets(35, 0, 0, 0));
+                labelBox.setPadding(new Insets(30, 0, 0, 0));
                 labelBox.getChildren().addAll(nameLabel, priceLabel, rateLabel);
                 Image img = new Image(i.getURL());
                 ImageView imgv = new ImageView();
@@ -295,14 +353,14 @@ public class TravalPlanner extends Application {
                     Label nameLabel = new Label();
                     nameLabel.setText(i.getName());
                     Label priceLabel = new Label();
-
-                    priceLabel.setText("Price: " + Math.round(i.getPrice() * distKM) + " per person");
+                    calculateRatio(Math.round(i.getPrice() * distKM), "CAD", toCurrencyCB.getSelectionModel().getSelectedItem());
+                    priceLabel.setText("Price: " + String.format("%.1f%n", ratio) + " per person");
                     //priceLabel.setText("Dist: " + distKM);
                     Label rateLabel = new Label();
                     rateLabel.setText("Rating: " + i.getRating() + "/5");
                     labelBox.setPrefSize(193, 150);
                     labelBox.setSpacing(20);
-                    labelBox.setPadding(new Insets(35, 0, 0, 0));
+                    labelBox.setPadding(new Insets(30, 0, 0, 0));
                     labelBox.getChildren().addAll(nameLabel, priceLabel, rateLabel);
                     Image img = new Image(i.getURL());
                     ImageView imgv = new ImageView();

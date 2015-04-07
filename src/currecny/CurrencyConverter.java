@@ -393,9 +393,9 @@ public final class CurrencyConverter {
     {
         System.out.println("*** Simple tests of this class ****");
         CurrencyConverter converter = CurrencyConverter.getInstance();
-        //for (String currency : converter.getCurrencies()) {
-        //    System.out.println("Currency: " + currency);
-        //}
+        for (String currency : converter.getCurrencies()) {
+            System.out.println("Currency: " + currency);
+        }
         Date date = new Date();
         double amount = 1;
         double converted;
