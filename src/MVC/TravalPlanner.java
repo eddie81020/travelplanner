@@ -145,8 +145,8 @@ public class TravalPlanner extends Application {
 
         left.setSpacing(10);
         left.setPadding(new Insets(0, 20, 0, 0));
-        TextField departureTF = new TextField("Saskatoon");
-        TextField destinationTF = new TextField("Toronto");
+        TextField departureTF = new TextField("Enter departure");
+        TextField destinationTF = new TextField("Enter destination");
         Label depLab = new Label("Departure:");
         Label desLab = new Label("Destination");
         depLab.setFont(Font.font(20));
@@ -275,7 +275,7 @@ public class TravalPlanner extends Application {
                 nameLabel.setText(i.getName() + " " + dest);
                 Label priceLabel = new Label();
                 calculateRatio(i.getPrice(), "CAD", toCurrencyCB.getSelectionModel().getSelectedItem());
-                priceLabel.setText("Price: " + String.format("%.1f%n", ratio) + " per night");
+                priceLabel.setText("Price: " + String.format("%.1f%n", ratio) + toCurrencyCB.getSelectionModel().getSelectedItem() + " per night");
                 Label rateLabel = new Label();
                 rateLabel.setText("Rating: " + i.getRating() + "/5");
                 labelBox.setPrefSize(193, 150);
@@ -313,7 +313,7 @@ public class TravalPlanner extends Application {
                 Label priceLabel = new Label();
                 if (i.getPrice() > 0) {
                     calculateRatio(i.getPrice(), "CAD", toCurrencyCB.getSelectionModel().getSelectedItem());
-                    priceLabel.setText("Price: " + String.format("%.1f%n", ratio) + " per person");
+                    priceLabel.setText("Price: " + String.format("%.1f%n", ratio)+ toCurrencyCB.getSelectionModel().getSelectedItem()  + " per person");
                 } else {
                     priceLabel.setText("Price: free");
                 }
@@ -354,7 +354,7 @@ public class TravalPlanner extends Application {
                     nameLabel.setText(i.getName());
                     Label priceLabel = new Label();
                     calculateRatio(Math.round(i.getPrice() * distKM), "CAD", toCurrencyCB.getSelectionModel().getSelectedItem());
-                    priceLabel.setText("Price: " + String.format("%.1f%n", ratio) + " per person");
+                    priceLabel.setText("Price: " + String.format("%.1f%n", ratio)+ toCurrencyCB.getSelectionModel().getSelectedItem()  + " per person");
                     //priceLabel.setText("Dist: " + distKM);
                     Label rateLabel = new Label();
                     rateLabel.setText("Rating: " + i.getRating() + "/5");
