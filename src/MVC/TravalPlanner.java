@@ -34,10 +34,14 @@ import netscape.javascript.JSObject;
 public class TravalPlanner extends Application {
 
     private Scene scene;
-    MyBrowser myBrowser;
-    int browser = 1;
-    WebView webView = new WebView();
-    WebEngine webEngine = webView.getEngine();
+    MyBrowser currentBrowser;
+    MyBrowser browser0;
+    MyBrowser browser1;
+    int browser = 0;
+    WebView webView0 = new WebView();
+    WebEngine webEngine0 = webView0.getEngine();
+    WebView webView1 = new WebView();
+    WebEngine webEngine1 = webView1.getEngine();
     HBox root;
     VBox right;
     VBox left;
@@ -67,7 +71,10 @@ public class TravalPlanner extends Application {
         right = new VBox();
         left = new VBox();
         //distance = new Distance();
-        myBrowser = new MyBrowser();
+
+        browser0 = new MyBrowser(0);
+        browser1 = new MyBrowser(1);
+        currentBrowser = browser0;
         TabPane infoSec = new TabPane();
         myModel = new TravalPlannerModel();
 
@@ -137,19 +144,25 @@ public class TravalPlanner extends Application {
         Button submitButton = new Button("Submit");
         ChoiceBox<String> travelMethod = new ChoiceBox<>();
         travelMethod.getItems().addAll("DRIVING", "TRANSIT", "WALKING", "BICYCLING", "FLIGHT");
-        travelMethod.getSelectionModel().select(4);
+        travelMethod.getSelectionModel().select(0);
         travelMethod.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
                 if (travelMethod.getSelectionModel().getSelectedIndex() != 4) {
                     if (browser != 0) {
-                        myBrowser.switchMap();
+                        currentBrowser = browser0;
                         browser = 0;
+                        System.out.println("switched");
+                        left.getChildren().remove(5);
+                        left.getChildren().add(currentBrowser);
                     }
                 } else {
                     if (browser != 1) {
-                        myBrowser.switchMap();
+                        currentBrowser = browser1;
                         browser = 1;
+                        System.out.println("switched");
+                        left.getChildren().remove(5);
+                        left.getChildren().add(currentBrowser);
                     }
                 }
             }
@@ -163,17 +176,17 @@ public class TravalPlanner extends Application {
             String DepTemp = departureTF.getText();
             String DesTemp = destinationTF.getText();
             if (travelMethod.getSelectionModel().getSelectedIndex() != 4) {
-                webEngine.executeScript("setTravelMethod('" + travelMethod.getSelectionModel().getSelectedItem() + "')");
-                webEngine.executeScript("inputStartEnd('" + DepTemp + "','" + DesTemp + "')");
+                webEngine0.executeScript("setTravelMethod('" + travelMethod.getSelectionModel().getSelectedItem() + "')");
+                webEngine0.executeScript("inputStartEnd('" + DepTemp + "','" + DesTemp + "')");
                 myModel.setDeparture(DepTemp);
                 myModel.setDestination(DesTemp);
             } else {
-                webEngine.executeScript("setLocation('" + DepTemp + "','" + DesTemp + "')");
+                webEngine1.executeScript("setLocation('" + DepTemp + "','" + DesTemp + "')");
             }
             setTabs(DesTemp);
         });
 
-        left.getChildren().addAll(depLab, departureTF, desLab, destinationTF, submitPanel, myBrowser);
+        left.getChildren().addAll(depLab, departureTF, desLab, destinationTF, submitPanel, currentBrowser);
 
         root.getChildren().addAll(left, right);
         scene = new Scene(root, 1200, 810);
@@ -265,43 +278,44 @@ public class TravalPlanner extends Application {
                 j++;
             }
         }
+        if (browser == 1) {
+            distKM = ((Distance) window.getMember("app")).getDist() / 1000.0;
+            for (Info i : flight) {
+                if (Math.random() < 0.7) {
+                    AnchorPane template = new AnchorPane();
+                    template.setPrefSize(303, 150);
+                    if (j % 3 == 0) {
+                        template.setStyle(" -fx-background-color: LAVENDER;");
+                    } else if (j % 3 == 1) {
+                        template.setStyle(" -fx-background-color: #9AF8D4;");
+                    } else {
+                        template.setStyle(" -fx-background-color: #FCB0B0;");
+                    }
+                    VBox labelBox = new VBox();
+                    Label nameLabel = new Label();
+                    nameLabel.setText(i.getName());
+                    Label priceLabel = new Label();
 
-        distKM = ((Distance) window.getMember("app")).getDist() / 1000.0;
-        for (Info i : flight) {
-            if (Math.random() < 0.7) {
-                AnchorPane template = new AnchorPane();
-                template.setPrefSize(303, 150);
-                if (j % 3 == 0) {
-                    template.setStyle(" -fx-background-color: LAVENDER;");
-                } else if (j % 3 == 1) {
-                    template.setStyle(" -fx-background-color: #9AF8D4;");
-                } else {
-                    template.setStyle(" -fx-background-color: #FCB0B0;");
+                    priceLabel.setText("Price: " + Math.round(i.getPrice() * distKM) + " per person");
+                    //priceLabel.setText("Dist: " + distKM);
+                    Label rateLabel = new Label();
+                    rateLabel.setText("Rating: " + i.getRating() + "/5");
+                    labelBox.setPrefSize(193, 150);
+                    labelBox.setSpacing(20);
+                    labelBox.setPadding(new Insets(35, 0, 0, 0));
+                    labelBox.getChildren().addAll(nameLabel, priceLabel, rateLabel);
+                    Image img = new Image(i.getURL());
+                    ImageView imgv = new ImageView();
+                    imgv.setImage(img);
+                    imgv.setFitHeight(60);
+                    imgv.setFitWidth(100);
+                    AnchorPane.setLeftAnchor(imgv, 10.0);
+                    AnchorPane.setTopAnchor(imgv, 45.0);
+                    AnchorPane.setLeftAnchor(labelBox, 120.0);
+                    template.getChildren().addAll(imgv, labelBox);
+                    ticketInfoBox.getChildren().add(template);
+                    j++;
                 }
-                VBox labelBox = new VBox();
-                Label nameLabel = new Label();
-                nameLabel.setText(i.getName());
-                Label priceLabel = new Label();
-
-                priceLabel.setText("Price: " + Math.round(i.getPrice() * distKM) + " per person");
-                //priceLabel.setText("Dist: " + distKM);
-                Label rateLabel = new Label();
-                rateLabel.setText("Rating: " + i.getRating() + "/5");
-                labelBox.setPrefSize(193, 150);
-                labelBox.setSpacing(20);
-                labelBox.setPadding(new Insets(35, 0, 0, 0));
-                labelBox.getChildren().addAll(nameLabel, priceLabel, rateLabel);
-                Image img = new Image(i.getURL());
-                ImageView imgv = new ImageView();
-                imgv.setImage(img);
-                imgv.setFitHeight(60);
-                imgv.setFitWidth(100);
-                AnchorPane.setLeftAnchor(imgv, 10.0);
-                AnchorPane.setTopAnchor(imgv, 45.0);
-                AnchorPane.setLeftAnchor(labelBox, 120.0);
-                template.getChildren().addAll(imgv, labelBox);
-                ticketInfoBox.getChildren().add(template);
-                j++;
             }
         }
     }
@@ -309,28 +323,24 @@ public class TravalPlanner extends Application {
     //browser for google map
     class MyBrowser extends Region {
 
-        private int map;
         final URL urlGoogleMaps = getClass().getResource("googleMap.html");
         final URL urlGoogleMapsFlight = getClass().getResource("googleMapFlight.html");
 
-        public MyBrowser() {
-            map = 1;
-            webEngine.load(urlGoogleMapsFlight.toExternalForm());
-            webEngine.setJavaScriptEnabled(true);
-            getChildren().add(webView);
-            window = (JSObject) webEngine.executeScript("window");
-            window.setMember("app", new Distance());
-        }
-
-        public void switchMap() {
-            if (map == 0) {
-                webEngine.load(urlGoogleMapsFlight.toExternalForm());
-                map = 1;
-            } else {
-                webEngine.load(urlGoogleMaps.toExternalForm());
-                map = 0;
+        public MyBrowser(int i) {
+            if (i == 1) {
+                webEngine1.load(urlGoogleMapsFlight.toExternalForm());
+                webEngine1.setJavaScriptEnabled(true);
+                getChildren().add(webView1);
+                window = (JSObject) webEngine1.executeScript("window");
+                window.setMember("app", new Distance());
+            }
+            if (i == 0) {
+                webEngine0.load(urlGoogleMaps.toExternalForm());
+                webEngine0.setJavaScriptEnabled(true);
+                getChildren().add(webView0);
             }
         }
+
     }
 
     public class Distance {
