@@ -32,6 +32,7 @@
             var marker1;
             var marker2;
             var distance;
+            var fxapp = document.getElementById("TravalPlanner")
 
             function initialize() {
                 var mapOptions = {
@@ -73,6 +74,7 @@
 
                 geodesicPoly = new google.maps.Polyline(geodesicOptions);
 
+                
             }
 
 
@@ -90,8 +92,8 @@
                         geodesicPoly.setPath(path);
                         var bounds = new google.maps.LatLngBounds(addr1, addr2);
                         map.fitBounds(bounds);
-                        distance = google.maps.geometry.spherical.computeDistanceBetween (addr1, addr2);
-                        //app.setDist(distance);
+                        distance = google.maps.geometry.spherical.computeDistanceBetween(addr1, addr2);
+                        app.setDist(distance);
                     })
                 })
 
@@ -117,8 +119,8 @@
                     }
                 });
             }
-            
-            
+
+
 
             google.maps.event.addDomListener(window, 'load', initialize);
 
