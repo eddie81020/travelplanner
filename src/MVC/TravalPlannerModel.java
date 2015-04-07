@@ -31,6 +31,22 @@ public class TravalPlannerModel {
         flights = new LinkedList<>();
         sights = new LinkedList<>();
         try {
+            Scanner s = new Scanner(new File("hotel.txt")).useDelimiter("###################################");
+            while (s.hasNext()) {
+                Scanner t = new Scanner(s.next()).useDelimiter("\r\n#	");
+                 String tempName = t.next();
+                String tempURL = t.next();
+                Scanner r = new Scanner(t.next());
+                Double tempPrice = r.nextDouble();
+                r = new Scanner(t.next());
+                Double tempRating = r.nextDouble();
+                     Info temp = new Info(tempName, tempURL, tempPrice, tempRating);
+                hotels.add(temp);
+             }
+        } catch (FileNotFoundException ex) {
+            System.err.println(ex);
+        }
+        try {
             Scanner s = new Scanner(new File("airlines.txt")).useDelimiter("###################################");
             while (s.hasNext()) {
                 Scanner t = new Scanner(s.next()).useDelimiter("\r\n#	");
@@ -46,22 +62,7 @@ public class TravalPlannerModel {
         } catch (FileNotFoundException ex) {
             System.err.println(ex);
         }
-        try {
-            Scanner s = new Scanner(new File("hotel.txt")).useDelimiter("###################################");
-            while (s.hasNext()) {
-                Scanner t = new Scanner(s.next()).useDelimiter("\r\n#	");
-                String tempName = t.next();
-                String tempURL = t.next();
-                Scanner r = new Scanner(t.next());
-                Double tempPrice = r.nextDouble();
-                r = new Scanner(t.next());
-                Double tempRating = r.nextDouble();
-                Info temp = new Info(tempName, tempURL, tempPrice, tempRating);
-                hotels.add(temp);
-            }
-        } catch (FileNotFoundException ex) {
-            System.err.println(ex);
-        }
+        
         try {
             Scanner s = new Scanner(new File("sights.txt")).useDelimiter("###################################");
             while (s.hasNext()) {
