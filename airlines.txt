@@ -1,60 +1,60 @@
 ###################################
 #	Koryo Flight
-#	http://dem5xqcn61lj8.cloudfront.net/logos/JS.gif
+#	pic/air/koryo.gif
 #	0.06
 #	2.1
 ###################################
 #	Air Canada
-#	http://www.rjet.ca/blog/wp-content/uploads/2012/08/air_canada_logo1.gif
+#	pic/air/canada.gif
 #	0.11605508238
 #	1.7
 ###################################
 #	Virgin Atlantic
-#	http://img3.wikia.nocookie.net/__cb20100515062927/logopedia/images/c/c0/Virgin_Atlantic_new.png
+#	pic/air/virgin.png
 #	0.098
 #	3.7
 ###################################
 #	South African Airways
-#	http://famouslogos.net/images/airline-logos/southafrican-airways-logo.jpg
+#	pic/air/southafrican.jpg
 #	0.084
 #	3.6
 ###################################
 #	Emirates
-#	http://skift.com/wp-content/uploads/2013/10/emirates.jpg
+#	pic/air/emirates.gif
 #	0.13
 #	4.3
 ###################################
 #	Delta
-#	http://cdn-5.famouslogos.us/images/delta-airlines-logo.jpg
+#	pic/air/delta.jpg
 #	0.1
 #	3.7
 ###################################
 #	United Airlines
-#	http://img3.wikia.nocookie.net/__cb20100509192527/logopedia/images/0/02/United_Airlines_80s.png
+#	pic/air/united.png
 #	0.095
 #	3.5
 ###################################
 #	China Airlines
-#	http://logonoid.com/images/china-airlines-logo.png
+#	pic/air/china.png
 #	0.11
 #	3.8
 ###################################
 #	British Airways
-#	http://bariziafrica.com/assets/img/clients/british-airways-logo-1.jpg
+#	pic/air/british.jpg
 #	0.135
 #	3.9
 ###################################
 #	S7 Airlines
-#	http://www.logoeps.net/wp-content/uploads/2014/02/s7_airlines_logo.jpg
+#	pic/air/s7.jpg
 #	0.085
 #	3.2
 ###################################
 #	Copa Airlines
-#	https://s-media-cache-ak0.pinimg.com/originals/36/2e/f1/362ef1504c88832dafac7d03d05f419a.jpg
+#	pic/air/copa.jpg
 #	0.0912
 #	2.7
 ###################################
 #	SkyWest Airlines
-#	http://www.ranklogos.com/wp-content/uploads/2012/04/skywest-airline-logo-1.jpg
+#	pic/air/skywest.jpg
 #	0.0942
 #	3.0
