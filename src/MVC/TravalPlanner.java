@@ -2,7 +2,6 @@ package MVC;
 
 import java.net.URL;
 import javafx.application.Application;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -28,7 +27,7 @@ public class TravalPlanner extends Application {
 
     private Scene scene;
     MyBrowser myBrowser;
-    int browser = 0;
+    int browser = 1;
     WebView webView = new WebView();
     WebEngine webEngine = webView.getEngine();
     HBox root;
@@ -38,6 +37,8 @@ public class TravalPlanner extends Application {
 
     /**
      *    * @param args the command line arguments    
+     *
+     * @param args
      */
     public static void main(String[] args) {
         launch(args);
@@ -93,8 +94,8 @@ public class TravalPlanner extends Application {
 
         left.setSpacing(10);
         left.setPadding(new Insets(0, 20, 0, 0));
-        TextField departureTF = new TextField("15 Spinks Drive, Saskatoon");
-        TextField destinationTF = new TextField("University of Saskatchewan");
+        TextField departureTF = new TextField("Saskatoon");
+        TextField destinationTF = new TextField("Toronto");
         Label depLab = new Label("Departure:");
         Label desLab = new Label("Destination");
         depLab.setFont(Font.font(20));
@@ -109,26 +110,27 @@ public class TravalPlanner extends Application {
         submitPanel.setSpacing(20);
         submitPanel.getChildren().addAll(travelMethod, submitButton);
 
-        submitButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                if (travelMethod.getSelectionModel().getSelectedIndex() != 4) {
-                    if(browser!=0){
-                        myBrowser.switchMap();
-                        browser = 0;
-                    }
-                    String DepTemp = departureTF.getText();
-                    String DesTemp = destinationTF.getText();
-                    webEngine.executeScript("setTravelMethod('" + travelMethod.getSelectionModel().getSelectedItem() + "')");
-                    webEngine.executeScript("inputStartEnd('" + DepTemp + "','" + DesTemp + "')");
-                    myModel.setDeparture(DepTemp);
-                    myModel.setDestination(DesTemp);
-                } else {
-                    if(browser!=1){
-                        myBrowser.switchMap();
-                        browser = 1;
-                    }
+        submitButton.setOnMouseClicked((MouseEvent event) -> {
+            if (travelMethod.getSelectionModel().getSelectedIndex() != 4) {
+                if (browser != 0) {
+                    myBrowser.switchMap();
+                    browser = 0;
                 }
+                String DepTemp = departureTF.getText();
+                String DesTemp = destinationTF.getText();
+                webEngine.executeScript("setTravelMethod('" + travelMethod.getSelectionModel().getSelectedItem() + "')");
+                webEngine.executeScript("inputStartEnd('" + DepTemp + "','" + DesTemp + "')");
+                myModel.setDeparture(DepTemp);
+                myModel.setDestination(DesTemp);
+            } else {
+                if (browser != 1) {
+                    myBrowser.switchMap();
+                    browser = 1;
+                }
+                
+                String DepTemp = departureTF.getText();
+                String DesTemp = destinationTF.getText();
+                webEngine.executeScript("setLocation('" + DepTemp + "','" + DesTemp + "')");
             }
         });
 
@@ -146,22 +148,22 @@ public class TravalPlanner extends Application {
 
         private int map;
         final URL urlGoogleMaps = getClass().getResource("googleMap.html");
-            final URL urlGoogleMapsFlight = getClass().getResource("googleMapFlight.html");
-        
+        final URL urlGoogleMapsFlight = getClass().getResource("googleMapFlight.html");
+
         public MyBrowser() {
-            map = 0;
-            
-            webEngine.load(urlGoogleMaps.toExternalForm());
+            map = 1;
+
+            webEngine.load(urlGoogleMapsFlight.toExternalForm());
             webEngine.setJavaScriptEnabled(true);
             getChildren().add(webView);
 
         }
-        
-        public void switchMap(){
-            if(map==0){
+
+        public void switchMap() {
+            if (map == 0) {
                 webEngine.load(urlGoogleMapsFlight.toExternalForm());
                 map = 1;
-            }else{
+            } else {
                 webEngine.load(urlGoogleMaps.toExternalForm());
                 map = 0;
             }
