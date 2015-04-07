@@ -1,20 +1,4 @@
-/*
- * Copyright (c) 2007 Thomas Knierim
- * http://www.thomasknierim.com
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+
 package currecny;
 
 import java.net.*;
@@ -25,24 +9,7 @@ import java.text.*;
 import java.util.*;
 
 /**
- * CurrencyConverter provides an API for accessing the European Central Bank's
- * (ECB) foreign exchange rates. The published ECB rates contain exchange rates
- * for approx. 35 of the world's major currencies. They are updated daily at
- * 14:15 CET. These rates use EUR as reference currency and are specified with a
- * precision of 1/10000 of the currency unit (one hundredth cent). See:
- *
- * http://www.ecb.int/stats/exchange/eurofxref/html/index.en.html
- *
- * The convert() method performs currency conversions using either double values
- * or 64-bit long integer values. Long values are preferred in order to avoid
- * problems associated with floating point arithmetics. A local cache file is
- * used for storing exchange rates to reduce network latency. The cache file is
- * updated automatically when new exchange rates become available. It is
- * created/updated the first time a call to convert() is made.
- *
- * @version 1.0 2008-16-02
- * @author Thomas Knierim
- *
+
  */
 public final class CurrencyConverter {
 
@@ -307,13 +274,7 @@ public final class CurrencyConverter {
         return false;
     }
 
-    /**
-     * (Re-) download the XML cache file and store it in a temporary location.
-     *
-     * @throws IOException
-     *                 If (1) URL cannot be opened, or (2) if cache file cannot
-     *                 be opened, or (3) if a read/write error occurs.
-     */
+  
     private void refreshCacheFile() throws IOException {
         lastError = null;
         initCacheFile();
@@ -432,9 +393,9 @@ public final class CurrencyConverter {
     {
         System.out.println("*** Simple tests of this class ****");
         CurrencyConverter converter = CurrencyConverter.getInstance();
-        for (String currency : converter.getCurrencies()) {
-            System.out.println("Currency: " + currency);
-        }
+        //for (String currency : converter.getCurrencies()) {
+        //    System.out.println("Currency: " + currency);
+        //}
         Date date = new Date();
         double amount = 1;
         double converted;
