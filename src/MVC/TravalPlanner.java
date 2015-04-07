@@ -3,7 +3,6 @@ package MVC;
 import java.net.URL;
 import java.util.LinkedList;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
@@ -26,6 +25,7 @@ import javafx.scene.text.Font;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
+import netscape.javascript.JSObject;
 
 /**
  *
@@ -43,6 +43,8 @@ public class TravalPlanner extends Application {
     VBox left;
     TravalPlannerModel myModel;
     Distance distance;
+    double distKM;
+    JSObject window;
 
     VBox hotelInfoBox;
     VBox sightInfoBox;
@@ -64,10 +66,10 @@ public class TravalPlanner extends Application {
         root = new HBox();
         right = new VBox();
         left = new VBox();
+        //distance = new Distance();
         myBrowser = new MyBrowser();
         TabPane infoSec = new TabPane();
         myModel = new TravalPlannerModel();
-        distance = new Distance();
 
         root.setPadding(new Insets(10, 20, 20, 20));
 
@@ -166,7 +168,6 @@ public class TravalPlanner extends Application {
                 myModel.setDeparture(DepTemp);
                 myModel.setDestination(DesTemp);
             } else {
-
                 webEngine.executeScript("setLocation('" + DepTemp + "','" + DesTemp + "')");
             }
             setTabs(DesTemp);
@@ -265,6 +266,7 @@ public class TravalPlanner extends Application {
             }
         }
 
+        distKM = ((Distance) window.getMember("app")).getDist() / 1000.0;
         for (Info i : flight) {
             if (Math.random() < 0.7) {
                 AnchorPane template = new AnchorPane();
@@ -280,8 +282,9 @@ public class TravalPlanner extends Application {
                 Label nameLabel = new Label();
                 nameLabel.setText(i.getName());
                 Label priceLabel = new Label();
-                //priceLabel.setText("Price: " + i.getPrice() + " per person");
-                priceLabel.setText("Dist: " + distance.getDist());
+
+                priceLabel.setText("Price: " + Math.round(i.getPrice() * distKM) + " per person");
+                //priceLabel.setText("Dist: " + distKM);
                 Label rateLabel = new Label();
                 rateLabel.setText("Rating: " + i.getRating() + "/5");
                 labelBox.setPrefSize(193, 150);
@@ -312,22 +315,11 @@ public class TravalPlanner extends Application {
 
         public MyBrowser() {
             map = 1;
-
             webEngine.load(urlGoogleMapsFlight.toExternalForm());
             webEngine.setJavaScriptEnabled(true);
             getChildren().add(webView);
-            /*webEngine.getLoadWorker().stateProperty().addListener(
-                    new ChangeListener<State>() {
-                        @Override
-                        public void changed(ObservableValue<? extends State> ov,
-                                State oldState, State newState) {
-                            if (newState == State.SUCCEEDED) {
-                                JSObject win = (JSObject) webEngine.executeScript("window");
-                                win.setMember("app", new Distance());
-                            }
-                        }
-                    }
-            );*/
+            window = (JSObject) webEngine.executeScript("window");
+            window.setMember("app", new Distance());
         }
 
         public void switchMap() {
@@ -341,23 +333,23 @@ public class TravalPlanner extends Application {
         }
     }
 
-    class Distance {
+    public class Distance {
 
-        private Double dist;
+        private int dist;
 
-        public void exit() {
-            Platform.exit();
-        }
-        
-        public Distance(){
-            dist = 0.0;
+        public Distance() {
+            dist = 0;
         }
 
-        public void setDist(Double d) {
+        public void setDist(int d) {
             dist = d;
         }
 
-        public Double getDist() {
+        public void printDist() {
+            System.out.println(dist);
+        }
+
+        public int getDist() {
             return dist;
         }
     }
