@@ -100,6 +100,18 @@ public class TravalPlannerModel {
         return Destination;
     }
     
+    public LinkedList<Info> getHotelInfo(){
+        return hotels;
+    }
+    
+    public LinkedList<Info> getSightInfo(){
+        return sights;
+    }
+    
+    public LinkedList<Info> getFlightInfo(){
+        return flights;
+    }
+    
     public void addListener(TPListener newListener){
         listeners.add(newListener);
     }
